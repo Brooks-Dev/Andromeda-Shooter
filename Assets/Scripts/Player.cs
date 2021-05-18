@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _laserPrefab;
     //cool down for laser fire in seconds
+    [SerializeField]
     private float _fireRate = 0.25f;
     //time index for laser cooldown in seconds
     private float _canFire;
@@ -31,7 +32,13 @@ public class Player : MonoBehaviour
             FireWeapons();
         }
     }
-
+    void FireWeapons()
+    {
+        //set laser cool down time
+        _canFire = Time.time + _fireRate;
+        //spawn a laser at player position with an offset, 0.75,  from player
+        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.75f, 0), Quaternion.identity);
+    }
     void CalculateMovement()
     {
         //grap vertical and horizontal inputs
@@ -52,13 +59,5 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(11.3f, transform.position.y, 0);
         }
-    }
-
-    void FireWeapons()
-    {
-        //set laser cool down time
-        _canFire = Time.time + _fireRate;
-        //spawn a laser at player position with an offset, 0.75,  from player
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.75f, 0), Quaternion.identity);
     }
 }

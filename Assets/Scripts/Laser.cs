@@ -4,16 +4,8 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    //laser speed variable
+    //laser velocity variable in meters per second
     private float _speed = 8.0f;
-    
-    /*
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-    */
 
     // Update is called once per frame
     void Update()
