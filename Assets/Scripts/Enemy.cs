@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-   private void OnTriggerEnter(Collider other)
+   private void OnTriggerEnter2D(Collider2D other)
     {
         //check to see if collision is with player
         if (other.CompareTag("Player"))

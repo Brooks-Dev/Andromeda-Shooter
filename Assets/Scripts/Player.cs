@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
         //set laser cool down time
         _canFire = Time.time + _fireRate;
         //spawn a laser at player position with an offset, 0.75,  from player
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.75f, 0), Quaternion.identity);
+        Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
     }
     void CalculateMovement()
     {
