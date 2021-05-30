@@ -18,8 +18,14 @@ public class Player : MonoBehaviour
     //player lives variable
     [SerializeField]
     private int _lives = 3;
+    //access spwan managrer script
     private SpawnManager _spawnManager;
-
+    //triple shot active
+    [SerializeField]
+    private bool _isTripleShotActive = false;
+    [SerializeField]
+    private GameObject _tripleShotPrefab;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -46,8 +52,18 @@ public class Player : MonoBehaviour
     {
         //set laser cool down time
         _canFire = Time.time + _fireRate;
-        //spawn a laser at player position with an offset, 0.75,  from player
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
+        //check if triple shot is active
+        if (_isTripleShotActive == true)
+        {
+            //spawn three lasers at player position with no offset  from player
+            Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            //spawn a laser at player position with an offset, 0.75,  from player
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
+        }
+
     }
     void CalculateMovement()
     {
@@ -79,5 +95,19 @@ public class Player : MonoBehaviour
             _spawnManager.OnPlayerDeath();
             Destroy(gameObject);
         }
+    }
+
+    public void ActivateTripleShot()
+    {
+        Debug.Log("Triple shot powerup is active");
+        _isTripleShotActive = true;
+        StartCoroutine(InactivateTripleShot());
+    }
+
+    IEnumerator InactivateTripleShot()
+    {
+        yield return new WaitForSeconds(5.0f);
+        Debug.Log("Triple shot powerup is inactive");
+        _isTripleShotActive = false;
     }
 }
