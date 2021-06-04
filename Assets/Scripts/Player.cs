@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     //player velocity in meters per second
     [SerializeField]
     private float _velocity = 3.5f;
+    //speed boost multiplier
+    private float _velocityMultiplier = 1.0f;
     //laser prefab object
     [SerializeField]
     private GameObject _laserPrefab;
@@ -21,11 +23,19 @@ public class Player : MonoBehaviour
     //access spwan managrer script
     private SpawnManager _spawnManager;
     //triple shot active
-    [SerializeField]
     private bool _isTripleShotActive = false;
     [SerializeField]
     private GameObject _tripleShotPrefab;
-    
+    [SerializeField]
+    private float _tripleShotDuration = 4.0f;
+    [SerializeField]
+    private float _speedDuration = 4.0f;
+    //shield active
+    private bool _isShieldActive = false;
+    //shield visualizer
+    [SerializeField]
+    private GameObject _playerShield;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,31 +75,71 @@ public class Player : MonoBehaviour
         }
 
     }
+    public void ActivateTripleShot()
+    {
+        _isTripleShotActive = true;
+        StartCoroutine(InactivateTripleShot());
+    }
+
+    IEnumerator InactivateTripleShot()
+    {
+        yield return new WaitForSeconds(_tripleShotDuration);
+        Debug.Log("Triple shot powerup is inactive");
+        _isTripleShotActive = false;
+    }
+
     void CalculateMovement()
     {
         //grap vertical and horizontal inputs
         float verticalInput = Input.GetAxis("Vertical"), horizontalInput = Input.GetAxis("Horizontal");
 
         //move player in the horizontal (x) & vertical (y) axis with set speed in real time
-        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _velocity * Time.deltaTime);
+        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _velocity * _velocityMultiplier * Time.deltaTime);
 
         //check vertical (y) boundary violation
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y,-5.0f, 0) , 0);
 
         //wrap horizontal(x) on boundary violation
-        if (transform.position.x > 11.3f)
+        if (transform.position.x > 11.0f)
         {
-            transform.position = new Vector3(-11.3f, transform.position.y, 0);
+            transform.position = new Vector3(-11.0f, transform.position.y, 0);
         }
-        else if (transform.position.x < -11.3f)
+        else if (transform.position.x < -11.0f)
         {
-            transform.position = new Vector3(11.3f, transform.position.y, 0);
+            transform.position = new Vector3(11.0f, transform.position.y, 0);
         }
     }
+
+    public void ActivateSpeed()
+    {
+        _velocityMultiplier = 2f;
+        StartCoroutine(InactivateSpeed());
+    }
+
+    IEnumerator InactivateSpeed()
+    {
+        yield return new WaitForSeconds(_speedDuration);
+        Debug.Log("Speed boost is inactive");
+        _velocityMultiplier = 1f;
+    }
+
     public void DamagePlayer()
     {
-        //remove a life
-        _lives--;
+        //is player shield on?
+        if (_isShieldActive == true)
+        {
+            // turn player shield off
+            _isShieldActive = false;
+            _playerShield.SetActive(false);
+            //avoid damage
+            return;
+        }
+        else
+        {
+            //remove a life
+            _lives--;
+        }
+
         if (_lives <= 0)
         {
             _spawnManager.OnPlayerDeath();
@@ -97,17 +147,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ActivateTripleShot()
+    public void ActivateShield()
     {
-        Debug.Log("Triple shot powerup is active");
-        _isTripleShotActive = true;
-        StartCoroutine(InactivateTripleShot());
-    }
-
-    IEnumerator InactivateTripleShot()
-    {
-        yield return new WaitForSeconds(5.0f);
-        Debug.Log("Triple shot powerup is inactive");
-        _isTripleShotActive = false;
+        //turn player shield on
+        _isShieldActive = true;
+        _playerShield.SetActive(true);
     }
 }
