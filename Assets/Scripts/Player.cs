@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     //player lives variable
     [SerializeField]
     private int _lives = 3;
-    //access spwan managrer script
+    //access spawn manager script
     private SpawnManager _spawnManager;
     //triple shot active
     private bool _isTripleShotActive = false;
@@ -35,6 +35,10 @@ public class Player : MonoBehaviour
     //shield visualizer
     [SerializeField]
     private GameObject _playerShield;
+    [SerializeField]
+    private int _score = 0;
+    //access spawn manager
+    private UIManager _uiManager;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +47,11 @@ public class Player : MonoBehaviour
         if(_spawnManager == null)  
         {
             Debug.LogError("Spawn manager in player is null.");
+        }
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.LogError("UI Manager is null in player");
         }
         transform.position = new Vector3(0, 0, 0);
     }
@@ -138,6 +147,7 @@ public class Player : MonoBehaviour
         {
             //remove a life
             _lives--;
+            _uiManager.UpdateLives(_lives);
         }
 
         if (_lives <= 0)
@@ -152,5 +162,11 @@ public class Player : MonoBehaviour
         //turn player shield on
         _isShieldActive = true;
         _playerShield.SetActive(true);
+    }
+
+    public void PlayerScore(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScoreUI(_score);
     }
 }

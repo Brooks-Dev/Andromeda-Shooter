@@ -7,6 +7,18 @@ public class Enemy : MonoBehaviour
     //enemy speed variable
     [SerializeField]
     private float _speed = 4.0f;
+    //access player component
+    private Player _player;
+
+    void Start()
+    {
+        _player = GameObject.Find("Player").transform.GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("Player in enely is null");
+        }
+
+    }
 
     // Update is called once per frame
     void Update()
@@ -26,11 +38,10 @@ public class Enemy : MonoBehaviour
         //check to see if collision is with player
         if (other.CompareTag("Player"))
         {
-            Player player = other.transform.GetComponent<Player>();
             //damage player
-            if (player != null)
+            if (_player != null)
             {
-                player.DamagePlayer();
+                _player.DamagePlayer();
             }
             //destroy enemy
             Destroy(gameObject);
@@ -39,6 +50,8 @@ public class Enemy : MonoBehaviour
         else if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
+            //update player score
+            _player.PlayerScore(10);
             Destroy(gameObject);
         }
     }
