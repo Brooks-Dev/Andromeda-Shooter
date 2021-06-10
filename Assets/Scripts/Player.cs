@@ -132,6 +132,19 @@ public class Player : MonoBehaviour
         _velocityMultiplier = 1f;
     }
 
+    public void ActivateShield()
+    {
+        //turn player shield on
+        _isShieldActive = true;
+        _playerShield.SetActive(true);
+    }
+
+    public void PlayerScore(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScoreUI(_score);
+    }
+    
     public void DamagePlayer()
     {
         //is player shield on?
@@ -155,18 +168,5 @@ public class Player : MonoBehaviour
             _spawnManager.OnPlayerDeath();
             Destroy(gameObject);
         }
-    }
-
-    public void ActivateShield()
-    {
-        //turn player shield on
-        _isShieldActive = true;
-        _playerShield.SetActive(true);
-    }
-
-    public void PlayerScore(int points)
-    {
-        _score += points;
-        _uiManager.UpdateScoreUI(_score);
     }
 }
