@@ -9,15 +9,20 @@ public class Enemy : MonoBehaviour
     private float _speed = 4.0f;
     //access player component
     private Player _player;
+    private Animator _animator;
 
     void Start()
     {
         _player = GameObject.Find("Player").transform.GetComponent<Player>();
         if (_player == null)
         {
-            Debug.LogError("Player in enely is null");
+            Debug.LogError("Player in enemy is null");
         }
-
+        _animator = gameObject.GetComponent<Animator>();
+        if (_animator == null)
+        {
+            Debug.LogError("Animator in enemy is null.");
+        }
     }
 
     // Update is called once per frame
@@ -44,7 +49,7 @@ public class Enemy : MonoBehaviour
                 _player.DamagePlayer();
             }
             //destroy enemy
-            Destroy(gameObject);
+            EnemyDestroyed();
         }
         //if collision with laser destroy laser and enemy
         else if (other.CompareTag("Laser"))
@@ -52,8 +57,21 @@ public class Enemy : MonoBehaviour
             Destroy(other.gameObject);
             //update player score
             _player.PlayerScore(10);
-            Destroy(gameObject);
+            //destroy enemy
+            EnemyDestroyed();
         }
     }
 
+    private void EnemyDestroyed()
+    {
+        //turn on explosion animation for enemy
+        _animator.SetTrigger("OnEnemyDeath");
+        //stops the enmy from moving after death
+        _speed = 0;
+        //turn off collisions so dead enemy does not destroy player
+        Destroy(GetComponent<BoxCollider2D>());
+        Destroy(GetComponent<Rigidbody2D>());
+        //wait for animation to finish then destroy the enemy game object
+        Destroy(gameObject, 2.7f);
+    }
 }

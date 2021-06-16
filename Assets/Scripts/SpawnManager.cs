@@ -17,8 +17,7 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartSpawning()
     {
         StartCoroutine(SpawnEnemies());
         StartCoroutine(SpawnPowerups());
@@ -42,6 +41,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnEnemies()
     {
+        yield return new WaitForSeconds(3.0f);
         float wait = _enemySpawnRate;
         while (_stopSpawning == false)
         {

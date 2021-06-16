@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     private int _score = 0;
     //access spawn manager
     private UIManager _uiManager;
+    [SerializeField]
+    private GameObject[] _engines;
 
     // Start is called before the first frame update
     void Start()
@@ -160,6 +162,15 @@ public class Player : MonoBehaviour
         {
             //remove a life
             _lives--;
+            if (_lives == 2)
+            {
+                _engines[Random.Range(0, 2)].SetActive(true);
+            }
+            else
+            {
+                _engines[0].SetActive(true);
+                _engines[1].SetActive(true);
+            }
             _uiManager.UpdateLives(_lives);
         }
 
