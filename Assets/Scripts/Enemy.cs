@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     //access player component
     private Player _player;
     private Animator _animator;
+    private AudioSource _enemyAudio;
 
     void Start()
     {
@@ -22,6 +23,11 @@ public class Enemy : MonoBehaviour
         if (_animator == null)
         {
             Debug.LogError("Animator in enemy is null.");
+        }
+        _enemyAudio = GetComponent<AudioSource>();
+        if(_enemyAudio == null)
+        {
+            Debug.LogError("Audio source in enemy is null");
         }
     }
 
@@ -66,6 +72,8 @@ public class Enemy : MonoBehaviour
     {
         //turn on explosion animation for enemy
         _animator.SetTrigger("OnEnemyDeath");
+        //plays explosion audio clip
+        _enemyAudio.Play();
         //stops the enmy from moving after death
         _speed = 0;
         //turn off collisions so dead enemy does not destroy player

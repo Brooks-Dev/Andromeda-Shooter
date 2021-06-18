@@ -41,6 +41,9 @@ public class Player : MonoBehaviour
     private UIManager _uiManager;
     [SerializeField]
     private GameObject[] _engines;
+    [SerializeField]
+    private AudioClip _laserShotClip;
+    private AudioSource _playerAudio;
 
     // Start is called before the first frame update
     void Start()
@@ -53,9 +56,18 @@ public class Player : MonoBehaviour
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (_uiManager == null)
         {
-            Debug.LogError("UI Manager is null in player");
+            Debug.LogError("UI Manager is null in player.");
         }
         transform.position = new Vector3(0, 0, 0);
+        _playerAudio = GetComponent<AudioSource>();
+        if (_playerAudio == null)
+        {
+            Debug.LogError("Laser shot audio source is null in player.");
+        }
+        else
+        {
+            _playerAudio.clip = _laserShotClip;
+        }
     }
 
     // Update is called once per frame
@@ -84,7 +96,8 @@ public class Player : MonoBehaviour
             //spawn a laser at player position with an offset, 0.75,  from player
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
         }
-
+        //plays laser shot audio clip
+        _playerAudio.Play();
     }
     public void ActivateTripleShot()
     {
