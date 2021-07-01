@@ -44,6 +44,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _laserShotClip;
     private AudioSource _playerAudio;
+    [SerializeField]
+    private GameObject _explosionPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -190,6 +192,7 @@ public class Player : MonoBehaviour
         if (_lives <= 0)
         {
             _spawnManager.OnPlayerDeath();
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }

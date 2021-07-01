@@ -11,6 +11,10 @@ public class Enemy : MonoBehaviour
     private Player _player;
     private Animator _animator;
     private AudioSource _enemyAudio;
+    [SerializeField]
+    private GameObject _enemyLaserPrefab;
+    private float _fireRate;
+    private float _canFire;
 
     void Start()
     {
@@ -29,6 +33,8 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("Audio source in enemy is null");
         }
+        _fireRate = Random.Range(3f, 7f);
+        _canFire = Time.time + _fireRate;
     }
 
     // Update is called once per frame
@@ -41,6 +47,11 @@ public class Enemy : MonoBehaviour
         {
             float randomX = Random.Range(-9.5f, 9.5f);
             transform.position = new Vector3(randomX, 6.4f, 0);
+        }
+        if (Time.time >= _canFire)
+        {
+            Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
+            _canFire = Time.time + _fireRate;
         }
     }
 
@@ -79,6 +90,8 @@ public class Enemy : MonoBehaviour
         //turn off collisions so dead enemy does not destroy player
         Destroy(GetComponent<BoxCollider2D>());
         Destroy(GetComponent<Rigidbody2D>());
+        //prevent enemy laser from firing after destroyed
+        _canFire = Time.time + 3f;
         //wait for animation to finish then destroy the enemy game object
         Destroy(gameObject, 2.7f);
     }

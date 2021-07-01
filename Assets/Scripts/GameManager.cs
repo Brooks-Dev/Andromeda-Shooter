@@ -16,6 +16,19 @@ public class GameManager : MonoBehaviour
             // loads the Game scene
             SceneManager.LoadScene(1);
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                // loads the Game scene
+                SceneManager.LoadScene(0);
+            }
+            else
+            {
+                Application.Quit();
+            }
+        }
     }
 
     public void GameOver()
