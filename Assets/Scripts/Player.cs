@@ -100,18 +100,18 @@ public class Player : MonoBehaviour
                 _thruster.SetActive(false);
                 _afterburnersOn = true;
             }
-            else
+        }
+        else
+        {
+            if (_afterburnersOn == true)
             {
-                if (_afterburner == true)
-                {
-                    _velocityMultiplier /= 2f;
-                    _afterburnersOn = false;
-                    _afterburner.SetActive(false);
-                    _thruster.SetActive(true);
-                }
+                _velocityMultiplier /= 2f;
+                _afterburnersOn = false;
+                _afterburner.SetActive(false);
+                _thruster.SetActive(true);
             }
         }
-        
+
         CalculateMovement();
 
         //fire laser on pressing space key
