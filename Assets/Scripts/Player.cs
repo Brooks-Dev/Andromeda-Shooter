@@ -47,6 +47,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
 
+    private GameObject _thruster;
+
+    private GameObject _afterburner;
+
+    private bool _afterburnersOn = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -70,11 +76,42 @@ public class Player : MonoBehaviour
         {
             _playerAudio.clip = _laserShotClip;
         }
+        _thruster = gameObject.transform.Find("Thruster").gameObject;
+        if (_thruster == null)
+        {
+            Debug.LogError("Thruster is null in player.");
+        }
+        _afterburner = gameObject.transform.Find("Afterburner").gameObject;
+        if (_afterburner == null)
+        {
+            Debug.LogError("Afterburner is null in player.");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (_afterburnersOn == false)
+            {
+                _velocityMultiplier *= 2f;
+                _afterburner.SetActive(true);
+                _thruster.SetActive(false);
+                _afterburnersOn = true;
+            }
+            else
+            {
+                if (_afterburner == true)
+                {
+                    _velocityMultiplier /= 2f;
+                    _afterburnersOn = false;
+                    _afterburner.SetActive(false);
+                    _thruster.SetActive(true);
+                }
+            }
+        }
+        
         CalculateMovement();
 
         //fire laser on pressing space key
@@ -138,7 +175,7 @@ public class Player : MonoBehaviour
 
     public void ActivateSpeed()
     {
-        _velocityMultiplier = 2f;
+        _velocityMultiplier *= 2f;
         StartCoroutine(InactivateSpeed());
     }
 
@@ -146,7 +183,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(_speedDuration);
         Debug.Log("Speed boost is inactive");
-        _velocityMultiplier = 1f;
+        _velocityMultiplier /= 2f;
     }
 
     public void ActivateShield()
