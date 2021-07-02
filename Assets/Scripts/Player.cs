@@ -53,6 +53,8 @@ public class Player : MonoBehaviour
 
     private bool _afterburnersOn = false;
 
+    private MainCamera _mainCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,6 +87,11 @@ public class Player : MonoBehaviour
         if (_afterburner == null)
         {
             Debug.LogError("Afterburner is null in player.");
+        }
+        _mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        if (_mainCamera == null)
+        {
+            Debug.LogError("Main camera is null in player.");
         }
     }
 
@@ -232,5 +239,7 @@ public class Player : MonoBehaviour
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
+
+        _mainCamera.CameraShake();
     }
 }
