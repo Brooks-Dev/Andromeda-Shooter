@@ -48,6 +48,10 @@ public class Powerup : MonoBehaviour
                         Debug.Log("Shields activated");
                         player.ActivateShield();
                         break;
+                    case 3:
+                        Debug.Log("Health boost");
+                        player.HealthBoost();
+                        break;
                     default:
                         Debug.Log("PowerupID default value");
                         break;

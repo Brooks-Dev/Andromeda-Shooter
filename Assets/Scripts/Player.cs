@@ -242,4 +242,21 @@ public class Player : MonoBehaviour
 
         _mainCamera.CameraShake();
     }
+
+    public void HealthBoost()
+    {
+        //add one life to player, not to exceed 3 lives
+        _lives ++;
+        if(_lives >= 3)
+        {
+            _lives = 3;
+            _engines[0].SetActive(false);
+            _engines[1].SetActive(false);
+        }
+        else
+        {
+            _engines[Random.Range(0, 2)].SetActive(false);
+        }
+        _uiManager.UpdateLives(_lives);
+    }
 }

@@ -28,7 +28,7 @@ public class SpawnManager : MonoBehaviour
     {
         while (_stopSpawning == false)
         {
-            int powerupID = Random.Range(0, 3);
+            int powerupID = Random.Range(0, 4);
             float delay = Random.Range(_powerupSpawnRate*2f/3f, _powerupSpawnRate*4f/3f);
             float randomX = Random.Range(-9.5f, 9.5f);
             if (_powerupsPrefab[powerupID] != null)
