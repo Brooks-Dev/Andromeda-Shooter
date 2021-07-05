@@ -1476,6 +1476,7 @@ MonoBehaviour:
   - {fileID: 5551836743099652895, guid: e416ba8c25913534981476544bdd408d, type: 3}
   - {fileID: 7798799178770472494, guid: 70d56c29bf8719a42a240a5c8f4f3ed5, type: 3}
   - {fileID: 124272335597880005, guid: 10fcab24f808b0547a9af15ccc41366b, type: 3}
+  - {fileID: 7721832294930884303, guid: eca673d8b26ab21468cd336147b04cdc, type: 3}
   _enemyContainer: {fileID: 1136522630}
   _powerupSpawnRate: 12
   _enemySpawnRate: 3

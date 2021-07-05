@@ -52,6 +52,10 @@ public class Powerup : MonoBehaviour
                         Debug.Log("Health boost");
                         player.HealthBoost();
                         break;
+                    case 4:
+                        Debug.Log("Laser power added");
+                        player.LaserPower();
+                        break;
                     default:
                         Debug.Log("PowerupID default value");
                         break;

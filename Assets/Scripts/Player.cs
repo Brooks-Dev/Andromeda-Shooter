@@ -300,4 +300,10 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         _audioWarningOn = false;
     }
+
+    public void LaserPower()
+    {
+        _ammo = 15;
+        _uiManager.UpdateAmmo(_ammo);
+    }
 }
