@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
     private Text _gameOverText;
     [SerializeField]
     private Text _restartGameText;
+    [SerializeField]
+    private Text _ammoText;
     
     private GameManager _gameManager;
 
@@ -22,6 +24,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreText.text = "Score: " + 0;
+        _ammoText.text = "Laser Power: " + 15;
         _gameOverText.gameObject.SetActive(false);
         _restartGameText.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
@@ -34,6 +37,11 @@ public class UIManager : MonoBehaviour
     public void UpdateScoreUI (int score)
     {
         _scoreText.text = "Score: " + score;
+    }
+
+    public void UpdateAmmo(int ammo)
+    {
+        _ammoText.text = "Laser Power: " + ammo;
     }
 
     public void UpdateLives(int CurrentLives)

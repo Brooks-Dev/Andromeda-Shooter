@@ -47,6 +47,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
 
+    private int _ammo = 15;
+    [SerializeField]
+    private AudioClip _powerLowClip;
+    [SerializeField]
+    private AudioClip _powerDepletedClip;
+    private bool _audioWarningOn = false;
+
     private GameObject _thruster;
 
     private GameObject _afterburner;
@@ -120,7 +127,6 @@ public class Player : MonoBehaviour
         }
 
         CalculateMovement();
-
         //fire laser on pressing space key
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
@@ -129,6 +135,30 @@ public class Player : MonoBehaviour
     }
     void FireWeapons()
     {
+        //plays laser shot audio clip based upon ammo levels
+        if (_ammo <= 0)
+        {
+            if (_audioWarningOn == false)
+            {
+                _playerAudio.clip = _powerDepletedClip;
+                StartCoroutine(AudioWarning());
+            }
+            return;
+        }
+        else if (_ammo == 1)
+        {
+            _playerAudio.Stop();
+            _playerAudio.clip = _powerDepletedClip;
+            StartCoroutine(AudioWarning());
+        }
+        else if (_ammo <= 5)
+        {
+            if (_audioWarningOn == false)
+            {
+                _playerAudio.clip = _powerLowClip;
+                StartCoroutine(AudioWarning());
+            }
+        }
         //set laser cool down time
         _canFire = Time.time + _fireRate;
         //check if triple shot is active
@@ -142,8 +172,10 @@ public class Player : MonoBehaviour
             //spawn a laser at player position with an offset, 0.75,  from player
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
         }
-        //plays laser shot audio clip
-        _playerAudio.Play();
+        // deplete ammo when laser fired
+        _ammo--;
+        _uiManager.UpdateAmmo(_ammo);
+        _playerAudio.PlayOneShot(_laserShotClip);
     }
     public void ActivateTripleShot()
     {
@@ -258,5 +290,14 @@ public class Player : MonoBehaviour
             _engines[Random.Range(0, 2)].SetActive(false);
         }
         _uiManager.UpdateLives(_lives);
+    }
+
+    private IEnumerator AudioWarning()
+    {
+        Debug.Log("Audio warning.");
+        _playerAudio.Play();
+        _audioWarningOn = true;
+        yield return new WaitForSeconds(2.5f);
+        _audioWarningOn = false;
     }
 }
