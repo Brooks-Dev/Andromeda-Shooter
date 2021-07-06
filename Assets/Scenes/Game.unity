@@ -1237,6 +1237,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378931923}
   m_CullTransparentMesh: 1
+--- !u!1 &1456800769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1456800770}
+  - component: {fileID: 1456800772}
+  - component: {fileID: 1456800771}
+  m_Layer: 5
+  m_Name: Thruster_Energy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1456800770
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456800769}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2045884267}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 101.85828, y: -87.265564}
+  m_SizeDelta: {x: 22.3387, y: 140.1013}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1456800771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456800769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: a45d21c30e0154a9ca1a5d6fb2bf3cfa, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 1
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 1
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1456800772
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456800769}
+  m_CullTransparentMesh: 1
 --- !u!1 &1518861134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1803,6 +1878,7 @@ RectTransform:
   - {fileID: 564159930}
   - {fileID: 551006226}
   - {fileID: 1378931924}
+  - {fileID: 1456800770}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1833,6 +1909,7 @@ MonoBehaviour:
   _gameOverText: {fileID: 564159931}
   _restartGameText: {fileID: 551006227}
   _ammoText: {fileID: 1378931925}
+  _thrusterEnergyImage: {fileID: 1456800771}
 --- !u!1 &2067994929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1929,6 +2006,7 @@ MonoBehaviour:
   _explosionPrefab: {fileID: 7976804607022765055, guid: f7835dfe96db8b4498e9b0de85cac59e, type: 3}
   _powerLowClip: {fileID: 8300000, guid: 1e61d92dbc15b9a458c4f8ba41e45c1f, type: 3}
   _powerDepletedClip: {fileID: 8300000, guid: 73f0ebe9c5f9c9d4b88a44aa26ed6e7b, type: 3}
+  _afterburnDuration: 2
 --- !u!212 &2096852308
 SpriteRenderer:
   m_ObjectHideFlags: 0

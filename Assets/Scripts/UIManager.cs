@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     private Text _restartGameText;
     [SerializeField]
     private Text _ammoText;
+    [SerializeField]
+    private Image _thrusterEnergyImage;
     
     private GameManager _gameManager;
 
@@ -42,6 +44,11 @@ public class UIManager : MonoBehaviour
     public void UpdateAmmo(int ammo)
     {
         _ammoText.text = "Laser Power: " + ammo;
+    }
+
+    public void UpdateThrusterEnergy(float energy)
+    {
+        _thrusterEnergyImage.fillAmount -= energy;
     }
 
     public void UpdateLives(int CurrentLives)

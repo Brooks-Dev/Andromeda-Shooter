@@ -62,6 +62,14 @@ public class Player : MonoBehaviour
 
     private MainCamera _mainCamera;
 
+    //thruster duration and overheats
+    [SerializeField]
+    private float _afterburnDuration = 0.5f;
+    //time when engine coolsdown after excessive afterburn
+    private float _canAfterburn = 0;
+    //float for afterburner energy
+    private float _afterburnEnergy = 1.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -105,8 +113,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift)  && Time.time > _canAfterburn)
         {
+            //if afterburners turned on give speed boost and change VFX
             if (_afterburnersOn == false)
             {
                 _velocityMultiplier *= 2f;
@@ -114,15 +123,33 @@ public class Player : MonoBehaviour
                 _thruster.SetActive(false);
                 _afterburnersOn = true;
             }
+            //decrease energy on afterburner use
+            _afterburnEnergy -= Time.deltaTime/_afterburnDuration;
+            _afterburnEnergy = Mathf.Clamp(_afterburnEnergy, 0f, 1f);
+            //check for overheating afterburner
+            if (_afterburnEnergy <= 0)
+            {
+                _canAfterburn = Time.time + _afterburnDuration;
+            }
+            //update UI afterburner energy
+            _uiManager.UpdateThrusterEnergy(Time.deltaTime / _afterburnDuration);
         }
         else
         {
+            //if afterburners turned off stop speed boost and change VFX
             if (_afterburnersOn == true)
             {
                 _velocityMultiplier /= 2f;
                 _afterburnersOn = false;
                 _afterburner.SetActive(false);
                 _thruster.SetActive(true);
+            }
+            //only recharge afterburner if not overheated
+            if (_canAfterburn < Time.time)
+            {
+                _afterburnEnergy += Time.deltaTime / _afterburnDuration;
+                _afterburnEnergy = Mathf.Clamp(_afterburnEnergy, 0f, 1f);
+                _uiManager.UpdateThrusterEnergy(-Time.deltaTime / _afterburnDuration);
             }
         }
 
