@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     private float _velocity = 3.5f;
     //speed boost multiplier
     private float _velocityMultiplier = 1.0f;
+    
     //laser prefab object
     [SerializeField]
     private GameObject _laserPrefab;
@@ -18,10 +19,13 @@ public class Player : MonoBehaviour
     //time index for laser cooldown in seconds
     private float _canFire;
     //player lives variable
+    
     [SerializeField]
     private int _lives = 3;
     //access spawn manager script
+    
     private SpawnManager _spawnManager;
+    
     //triple shot active
     private bool _isTripleShotActive = false;
     [SerializeField]
@@ -30,20 +34,27 @@ public class Player : MonoBehaviour
     private float _tripleShotDuration = 4.0f;
     [SerializeField]
     private float _speedDuration = 4.0f;
-    //shield active
-    private bool _isShieldActive = false;
+
+
+    //shield level, max 3
+    private int _shields = 0;
     //shield visualizer
     [SerializeField]
-    private GameObject _playerShield;
+    private GameObject[] _playerShield;
+    
     [SerializeField]
     private int _score = 0;
+    
     //access spawn manager
     private UIManager _uiManager;
+    
     [SerializeField]
     private GameObject[] _engines;
+    
     [SerializeField]
     private AudioClip _laserShotClip;
     private AudioSource _playerAudio;
+    
     [SerializeField]
     private GameObject _explosionPrefab;
 
@@ -254,9 +265,15 @@ public class Player : MonoBehaviour
 
     public void ActivateShield()
     {
+        if (_shields < 3)
+        {
+            _shields++;
+        }
         //turn player shield on
-        _isShieldActive = true;
-        _playerShield.SetActive(true);
+        for (int i = 0; i < _shields; i++)
+        {
+            _playerShield[i].SetActive(true);
+        }
     }
 
     public void PlayerScore(int points)
@@ -268,11 +285,11 @@ public class Player : MonoBehaviour
     public void DamagePlayer()
     {
         //is player shield on?
-        if (_isShieldActive == true)
+        if (_shields > 0)
         {
             // turn player shield off
-            _isShieldActive = false;
-            _playerShield.SetActive(false);
+            _playerShield[_shields-1].SetActive(false);
+            _shields--;
             //avoid damage
             return;
         }
