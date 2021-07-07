@@ -204,19 +204,29 @@ public class Player : MonoBehaviour
         {
             //spawn three lasers at player position with no offset  from player
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            //triple shot does not cost ammo
         }
         else
         {
             //spawn a laser at player position with an offset, 0.75,  from player
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
+            // deplete ammo when laser fired
+            _ammo--;
         }
-        // deplete ammo when laser fired
-        _ammo--;
         _uiManager.UpdateAmmo(_ammo);
         _playerAudio.PlayOneShot(_laserShotClip);
     }
+
+    public void LaserPower()
+    {
+        _ammo = 15;
+        _uiManager.UpdateAmmo(_ammo);
+    }
+    
     public void ActivateTripleShot()
     {
+        _ammo = 15;
+        _uiManager.UpdateAmmo(_ammo); 
         _isTripleShotActive = true;
         StartCoroutine(InactivateTripleShot());
     }
@@ -343,11 +353,5 @@ public class Player : MonoBehaviour
         _audioWarningOn = true;
         yield return new WaitForSeconds(2.5f);
         _audioWarningOn = false;
-    }
-
-    public void LaserPower()
-    {
-        _ammo = 15;
-        _uiManager.UpdateAmmo(_ammo);
     }
 }
