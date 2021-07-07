@@ -7,6 +7,13 @@ public class Enemy : MonoBehaviour
     //enemy speed variable
     [SerializeField]
     private float _speed = 4.0f;
+    private float _spawnTime;
+    [SerializeField]
+    private float _frequency;
+    private float _phase;
+    private int _enemyID = 0;
+    private float _distanceY;
+
     //access player component
     private Player _player;
     private Animator _animator;
@@ -35,11 +42,35 @@ public class Enemy : MonoBehaviour
         }
         _fireRate = Random.Range(3f, 7f);
         _canFire = Time.time + _fireRate;
+
+        _spawnTime = Time.time;
+        _speed *= Random.Range(0.75f, 1.25f);
+        //25% chance to generate an enemy (ID = 1) that moves horizonatally
+        if (Random.Range(0,4) == 3)
+        {
+            _enemyID = 1;
+            _frequency = Mathf.PI * Random.Range(0.16f, 0.64f);
+            _phase = Random.Range(0f, 2f);
+        }
+        else
+        {
+            _enemyID = 0;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        //if enmemyID is 1 then move horizontally
+        if (_enemyID == 1)
+        {
+            _distanceY = _speed * Mathf.Sin(_frequency * Time.time - _spawnTime + _phase) * Time.deltaTime;
+        }
+        else
+        {
+            _distanceY = 0f;
+        }
+        transform.Translate(Vector3.right *  _distanceY);
         //move enyme down
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
         //if enemy off bottom of the screen then respawn at top with new random x position
@@ -48,6 +79,16 @@ public class Enemy : MonoBehaviour
             float randomX = Random.Range(-9.5f, 9.5f);
             transform.position = new Vector3(randomX, 6.4f, 0);
         }
+        //wrap horizontal(x) on boundary violation
+        if (transform.position.x > 11.0f)
+        {
+            transform.position = new Vector3(-11.0f, transform.position.y, 0);
+        }
+        else if (transform.position.x < -11.0f)
+        {
+            transform.position = new Vector3(11.0f, transform.position.y, 0);
+        }
+        // enemy fire
         if (Time.time >= _canFire)
         {
             Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
