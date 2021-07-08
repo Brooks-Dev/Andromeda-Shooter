@@ -23,6 +23,10 @@ public class Enemy : MonoBehaviour
     private float _fireRate;
     private float _canFire;
 
+    private Transform _enemyShield;
+    [SerializeField]
+    private bool _enemyShieldOn = false;
+
     void Start()
     {
         _player = GameObject.Find("Player").transform.GetComponent<Player>();
@@ -30,27 +34,44 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("Player in enemy is null");
         }
+
         _animator = gameObject.GetComponent<Animator>();
         if (_animator == null)
         {
             Debug.LogError("Animator in enemy is null.");
         }
+
         _enemyAudio = GetComponent<AudioSource>();
         if(_enemyAudio == null)
         {
             Debug.LogError("Audio source in enemy is null");
         }
+
+        _enemyShield = gameObject.transform.Find("Shield");
+        if (_enemyShield == null)
+        {
+            Debug.LogError("Enemy shield is null in Enemy");
+        }
+
         _fireRate = Random.Range(3f, 7f);
         _canFire = Time.time + _fireRate;
 
         _spawnTime = Time.time;
         _speed *= Random.Range(0.75f, 1.25f);
-        //25% chance to generate an enemy (ID = 1) that moves horizonatally
-        if (Random.Range(0,4) == 3)
+        int random = Random.Range(0, 4);
+        //25% chance to generate an enemy (ID = 1) that moves horizonatallyif (random == 3)
+        if (random == 3)
         {
             _enemyID = 1;
             _frequency = Mathf.PI * Random.Range(0.16f, 0.64f);
             _phase = Random.Range(0f, 2f);
+        }
+        //25% chance to generate an enemy (ID = 2) that has a shield
+        else if (random == 2)
+        {
+            _enemyShieldOn = true;
+            _enemyShield.gameObject.SetActive(true);
+            _enemyID = 2;
         }
         else
         {
@@ -106,6 +127,12 @@ public class Enemy : MonoBehaviour
             {
                 _player.DamagePlayer();
             }
+            if (_enemyShieldOn == true)
+            {
+                _enemyShield.gameObject.SetActive(false);
+                _enemyShieldOn = false;
+                return;
+            }
             //destroy enemy
             EnemyDestroyed();
         }
@@ -113,6 +140,13 @@ public class Enemy : MonoBehaviour
         else if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
+            //if shielded, enemy is not destroyed
+            if (_enemyShieldOn == true)
+            {
+                _enemyShield.gameObject.SetActive(false);
+                _enemyShieldOn = false;
+                return;
+            }
             //update player score
             _player.PlayerScore(10);
             //destroy enemy
