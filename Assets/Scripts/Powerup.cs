@@ -56,6 +56,10 @@ public class Powerup : MonoBehaviour
                         Debug.Log("Laser power added");
                         player.LaserPower();
                         break;
+                    case 5:
+                        Debug.Log("Missiles added");
+                        player.AddMissiles();
+                        break;
                     default:
                         Debug.Log("PowerupID default value");
                         break;

@@ -152,6 +152,22 @@ public class Enemy : MonoBehaviour
             //destroy enemy
             EnemyDestroyed();
         }
+        //if collision with missle destroy missile and enemy
+        else if (other.CompareTag("Missile"))
+        {
+            Destroy(other.gameObject);
+            //if shielded, enemy is not destroyed
+            if (_enemyShieldOn == true)
+            {
+                _enemyShield.gameObject.SetActive(false);
+                _enemyShieldOn = false;
+                return;
+            }
+            //update player score
+            _player.PlayerScore(10);
+            //destroy enemy
+            EnemyDestroyed();
+        }
     }
 
     private void EnemyDestroyed()

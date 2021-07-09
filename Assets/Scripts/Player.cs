@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     private float _velocity = 3.5f;
     //speed boost multiplier
     private float _velocityMultiplier = 1.0f;
-    
+
     //laser prefab object
     [SerializeField]
     private GameObject _laserPrefab;
@@ -19,13 +19,17 @@ public class Player : MonoBehaviour
     //time index for laser cooldown in seconds
     private float _canFire;
     //player lives variable
-    
     [SerializeField]
     private int _lives = 3;
     //access spawn manager script
-    
+
+    [SerializeField]
+    private GameObject _missilePrefab;
+    private bool _leftMissile = false, _rightMissile = false;
+    private GameObject _missile;
+
     private SpawnManager _spawnManager;
-    
+
     //triple shot active
     private bool _isTripleShotActive = false;
     [SerializeField]
@@ -41,20 +45,20 @@ public class Player : MonoBehaviour
     //shield visualizer
     [SerializeField]
     private GameObject[] _playerShield;
-    
+
     [SerializeField]
     private int _score = 0;
-    
+
     //access spawn manager
     private UIManager _uiManager;
-    
+
     [SerializeField]
     private GameObject[] _engines;
-    
+
     [SerializeField]
     private AudioClip _laserShotClip;
     private AudioSource _playerAudio;
-    
+
     [SerializeField]
     private GameObject _explosionPrefab;
 
@@ -81,11 +85,13 @@ public class Player : MonoBehaviour
     //float for afterburner energy
     private float _afterburnEnergy = 1.0f;
 
+    private GameObject _nearestEnemy;
+
     // Start is called before the first frame update
     void Start()
     {
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-        if(_spawnManager == null)  
+        if (_spawnManager == null)
         {
             Debug.LogError("Spawn manager in player is null.");
         }
@@ -124,7 +130,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift)  && Time.time > _canAfterburn)
+        if (Input.GetKey(KeyCode.LeftShift) && Time.time > _canAfterburn)
         {
             //if afterburners turned on give speed boost and change VFX
             if (_afterburnersOn == false)
@@ -135,7 +141,7 @@ public class Player : MonoBehaviour
                 _afterburnersOn = true;
             }
             //decrease energy on afterburner use
-            _afterburnEnergy -= Time.deltaTime/_afterburnDuration;
+            _afterburnEnergy -= Time.deltaTime / _afterburnDuration;
             _afterburnEnergy = Mathf.Clamp(_afterburnEnergy, 0f, 1f);
             //check for overheating afterburner
             if (_afterburnEnergy <= 0)
@@ -163,7 +169,28 @@ public class Player : MonoBehaviour
                 _uiManager.UpdateThrusterEnergy(-Time.deltaTime / _afterburnDuration);
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            _nearestEnemy = FindClosestEnemy();
+            Debug.Log(_nearestEnemy.transform.position.ToString());
+            if (_nearestEnemy != null)
+            {
+                if (_leftMissile == true)
+                {
+                    _missile = gameObject.transform.Find("Left_Missile").gameObject;
+                    _missile.GetComponent<Missile>().FireMissile(_nearestEnemy.transform);
+                    _missile.name = "Missile";
+                    _leftMissile = false;
+                }
+                else if (_rightMissile == true)
+                {
+                    _missile = gameObject.transform.Find("Right_Missile").gameObject; 
+                    _missile.GetComponent<Missile>().FireMissile(_nearestEnemy.transform);
+                    _missile.name = "Missile";
+                    _rightMissile = false;
+                }
+            }
+        }
         CalculateMovement();
         //fire laser on pressing space key
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
@@ -222,13 +249,31 @@ public class Player : MonoBehaviour
         _ammo = 15;
         _uiManager.UpdateAmmo(_ammo);
     }
-    
+
     public void ActivateTripleShot()
     {
         _ammo = 15;
-        _uiManager.UpdateAmmo(_ammo); 
+        _uiManager.UpdateAmmo(_ammo);
         _isTripleShotActive = true;
         StartCoroutine(InactivateTripleShot());
+    }
+
+    public void AddMissiles()
+    {
+        if (_rightMissile == false)
+        {
+            _missile =Instantiate(_missilePrefab, transform.position + new Vector3(0.78f, -0.8f, 0f), Quaternion.identity);
+            _missile.name = "Right_Missile";
+            _missile.transform.parent = gameObject.transform;
+            _rightMissile = true;
+        }
+        if (_leftMissile == false)
+        {
+            _missile = Instantiate(_missilePrefab, transform.position + new Vector3(-0.78f, -0.8f, 0f), Quaternion.identity);
+            _missile.name = "Left_Missile";
+            _missile.transform.parent = gameObject.transform;
+            _leftMissile = true;
+        }
     }
 
     IEnumerator InactivateTripleShot()
@@ -247,7 +292,7 @@ public class Player : MonoBehaviour
         transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _velocity * _velocityMultiplier * Time.deltaTime);
 
         //check vertical (y) boundary violation
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y,-5.0f, 0) , 0);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -5.0f, 0), 0);
 
         //wrap horizontal(x) on boundary violation
         if (transform.position.x > 11.0f)
@@ -291,14 +336,14 @@ public class Player : MonoBehaviour
         _score += points;
         _uiManager.UpdateScoreUI(_score);
     }
-    
+
     public void DamagePlayer()
     {
         //is player shield on?
         if (_shields > 0)
         {
             // turn player shield off
-            _playerShield[_shields-1].SetActive(false);
+            _playerShield[_shields - 1].SetActive(false);
             _shields--;
             //avoid damage
             return;
@@ -332,8 +377,8 @@ public class Player : MonoBehaviour
     public void HealthBoost()
     {
         //add one life to player, not to exceed 3 lives
-        _lives ++;
-        if(_lives >= 3)
+        _lives++;
+        if (_lives >= 3)
         {
             _lives = 3;
             _engines[0].SetActive(false);
@@ -353,5 +398,25 @@ public class Player : MonoBehaviour
         _audioWarningOn = true;
         yield return new WaitForSeconds(2.5f);
         _audioWarningOn = false;
+    }
+
+    private GameObject FindClosestEnemy()
+    {
+        GameObject[] allEnemy;
+        allEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject enemy in allEnemy)
+        {
+            Vector3 diff = enemy.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = enemy;
+                distance = curDistance;
+            }
+        }
+        return closest;
     }
 }
