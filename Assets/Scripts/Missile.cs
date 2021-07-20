@@ -29,11 +29,19 @@ public class Missile : MonoBehaviour
     {
         if (_missileFired == true)
         {
-            Vector2 direction = (Vector2)_target.position - _rigidBody.position;
-            direction.Normalize();
-            float rotateAmount = Vector3.Cross(direction, transform.up).z;
-            _rigidBody.angularVelocity = -_angleChangingSpeed * rotateAmount;
-            _rigidBody.velocity = transform.up * _movementSpeed;
+            if (_target != null)
+            {
+                Vector2 direction = (Vector2)_target.position - _rigidBody.position;
+
+                direction.Normalize();
+                float rotateAmount = Vector3.Cross(direction, transform.up).z;
+                _rigidBody.angularVelocity = -_angleChangingSpeed * rotateAmount;
+                _rigidBody.velocity = transform.up * _movementSpeed;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 

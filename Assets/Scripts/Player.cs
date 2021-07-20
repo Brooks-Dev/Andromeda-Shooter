@@ -172,7 +172,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             _nearestEnemy = FindClosestEnemy();
-            Debug.Log(_nearestEnemy.transform.position.ToString());
             if (_nearestEnemy != null)
             {
                 if (_leftMissile == true)
