@@ -11,11 +11,10 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _frequency;
     private float _phase;
-    private int _enemyID = 0;
+
     private float _distanceY;
 
-    //access player component
-    private Player _player;
+
     private Animator _animator;
     private AudioSource _enemyAudio;
     [SerializeField]
@@ -27,6 +26,15 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private bool _enemyShieldOn = false;
 
+    private int _enemyID = 0;
+    //access player component
+    private Player _player;
+    //access enemy rigidbody
+    private Rigidbody2D _rigidBody;
+    private float _playerDetectRange = 4f;
+    private bool _attackPlayer = false;
+    private float _angleChangingSpeed = 180f;
+
     void Start()
     {
         _player = GameObject.Find("Player").transform.GetComponent<Player>();
@@ -34,7 +42,11 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("Player in enemy is null");
         }
-
+        _rigidBody = GetComponent<Rigidbody2D>();
+        if (_rigidBody == null)
+        {
+            Debug.LogError("Rigidbody2D is null in enemy");
+        }
         _animator = gameObject.GetComponent<Animator>();
         if (_animator == null)
         {
@@ -58,42 +70,63 @@ public class Enemy : MonoBehaviour
 
         _spawnTime = Time.time;
         _speed *= Random.Range(0.75f, 1.25f);
-        int random = Random.Range(0, 4);
+        _enemyID = Random.Range(0, 4);
         //25% chance to generate an enemy (ID = 1) that moves horizonatallyif (random == 3)
-        if (random == 3)
+        if (_enemyID == 1)
         {
-            _enemyID = 1;
             _frequency = Mathf.PI * Random.Range(0.16f, 0.64f);
             _phase = Random.Range(0f, 2f);
         }
         //25% chance to generate an enemy (ID = 2) that has a shield
-        else if (random == 2)
+        else if (_enemyID == 2)
         {
             _enemyShieldOn = true;
             _enemyShield.gameObject.SetActive(true);
-            _enemyID = 2;
-        }
-        else
-        {
-            _enemyID = 0;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if enmemyID is 1 then move horizontally
-        if (_enemyID == 1)
+        //check player and rigidbody exist, noting that rigidbody is destroyed for explosion animation
+        if (_player != null && _rigidBody != null)
         {
-            _distanceY = _speed * Mathf.Sin(_frequency * Time.time - _spawnTime + _phase) * Time.deltaTime;
+            //if enemyID is 3 and player in range ram player
+            if (_enemyID == 3 && Vector3.Distance(_player.transform.position, transform.position) <= _playerDetectRange)
+            {
+                _attackPlayer = true;
+            }
         }
         else
         {
-            _distanceY = 0f;
+            _attackPlayer = false;
         }
-        transform.Translate(Vector3.right *  _distanceY);
-        //move enyme down
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        if (_attackPlayer == true)
+        {
+            //ram player
+            Vector2 direction = _rigidBody.position - (Vector2)_player.transform.position;
+
+            direction.Normalize();
+            float rotateAmount = Vector3.Cross(direction, -transform.up).z;
+            _rigidBody.angularVelocity = _angleChangingSpeed * rotateAmount;
+            _rigidBody.velocity = transform.up * -_speed;
+        }
+        else
+        {
+            //if enmemyID is 1 then move horizontally
+            if (_enemyID == 1)
+            {
+                _distanceY = _speed * Mathf.Sin(_frequency * Time.time - _spawnTime + _phase) * Time.deltaTime;
+            }
+            else
+            {
+                _distanceY = 0f;
+            }
+            transform.Translate(Vector3.right * _distanceY);
+            //move enyme down
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+
         //if enemy off bottom of the screen then respawn at top with new random x position
         if (transform.position.y < -6.4f)
         {
@@ -110,7 +143,7 @@ public class Enemy : MonoBehaviour
             transform.position = new Vector3(11.0f, transform.position.y, 0);
         }
         // enemy fire
-        if (Time.time >= _canFire)
+        if (Time.time >= _canFire && _enemyID != 3)
         {
             Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
             _canFire = Time.time + _fireRate;
@@ -178,6 +211,7 @@ public class Enemy : MonoBehaviour
         _enemyAudio.Play();
         //stops the enmy from moving after death
         _speed = 0;
+        _attackPlayer = false;
         //turn off collisions so dead enemy does not destroy player
         Destroy(GetComponent<BoxCollider2D>());
         Destroy(GetComponent<Rigidbody2D>());
