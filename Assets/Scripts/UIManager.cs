@@ -18,15 +18,18 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _ammoText;
     [SerializeField]
+    private Text _missileText;
+    [SerializeField]
     private Image _thrusterEnergyImage;
-    
+
     private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         _scoreText.text = "Score: " + 0;
-        _ammoText.text = "Laser Power: " + 15;
+        _ammoText.text = "Laser Power: " + 15 + "/" + 15;
+        _missileText.text = "Missiles: " + 0 + "/" + 2;
         _gameOverText.gameObject.SetActive(false);
         _restartGameText.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
@@ -43,7 +46,20 @@ public class UIManager : MonoBehaviour
 
     public void UpdateAmmo(int ammo)
     {
-        _ammoText.text = "Laser Power: " + ammo;
+        if (ammo == 500)
+        {
+            _ammoText.text = "Laser Power: " + "\u221E";
+            _ammoText.fontSize = 20;
+        }
+        else
+        {
+            _ammoText.text = "Laser Power: " + ammo + "/" + 15;
+        }
+    }
+
+    public void UpdateMissiles(int _missiles)
+    {
+        _missileText.text = "Missiles: " + _missiles +  "/" + 2;
     }
 
     public void UpdateThrusterEnergy(float energy)

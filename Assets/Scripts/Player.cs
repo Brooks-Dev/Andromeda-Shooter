@@ -188,6 +188,14 @@ public class Player : MonoBehaviour
                     _missile.name = "Missile";
                     _rightMissile = false;
                 }
+                if (_rightMissile == false && _leftMissile == false)
+                {
+                    _uiManager.UpdateMissiles(0);
+                }
+                else
+                {
+                    _uiManager.UpdateMissiles(1);
+                }
             }
         }
         CalculateMovement();
@@ -251,10 +259,19 @@ public class Player : MonoBehaviour
 
     public void ActivateTripleShot()
     {
-        _ammo = 15;
+        _ammo = 500;
         _uiManager.UpdateAmmo(_ammo);
         _isTripleShotActive = true;
         StartCoroutine(InactivateTripleShot());
+    }
+
+    IEnumerator InactivateTripleShot()
+    {
+        yield return new WaitForSeconds(_tripleShotDuration);
+        Debug.Log("Triple shot powerup is inactive");
+        _isTripleShotActive = false;
+        _ammo = 15;
+        _uiManager.UpdateAmmo(_ammo);
     }
 
     public void AddMissiles()
@@ -273,13 +290,7 @@ public class Player : MonoBehaviour
             _missile.transform.parent = gameObject.transform;
             _leftMissile = true;
         }
-    }
-
-    IEnumerator InactivateTripleShot()
-    {
-        yield return new WaitForSeconds(_tripleShotDuration);
-        Debug.Log("Triple shot powerup is inactive");
-        _isTripleShotActive = false;
+        _uiManager.UpdateMissiles(2);
     }
 
     void CalculateMovement()
