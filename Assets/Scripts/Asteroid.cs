@@ -25,7 +25,7 @@ public class Asteroid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(transform.forward * _rotation * Time.deltaTime);
+        transform.Rotate(_rotation * Time.deltaTime * transform.forward);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

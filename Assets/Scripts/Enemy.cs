@@ -70,14 +70,14 @@ public class Enemy : MonoBehaviour
 
         _spawnTime = Time.time;
         _speed *= Random.Range(0.75f, 1.25f);
-        _enemyID = Random.Range(0, 4);
-        //25% chance to generate an enemy (ID = 1) that moves horizonatallyif (random == 3)
+        _enemyID = Random.Range(0, 5);
+        //20% chance to generate an enemy (ID = 1) that moves horizonatallyif (random == 3)
         if (_enemyID == 1)
         {
             _frequency = Mathf.PI * Random.Range(0.16f, 0.64f);
             _phase = Random.Range(0f, 2f);
         }
-        //25% chance to generate an enemy (ID = 2) that has a shield
+        //20% chance to generate an enemy (ID = 2) that has a shield
         else if (_enemyID == 2)
         {
             _enemyShieldOn = true;
@@ -124,7 +124,7 @@ public class Enemy : MonoBehaviour
             }
             transform.Translate(Vector3.right * _distanceY);
             //move enyme down
-            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+            transform.Translate(_speed * Time.deltaTime * Vector3.down);
         }
 
         //if enemy off bottom of the screen then respawn at top with new random x position
@@ -143,10 +143,29 @@ public class Enemy : MonoBehaviour
             transform.position = new Vector3(11.0f, transform.position.y, 0);
         }
         // enemy fire
-        if (Time.time >= _canFire && _enemyID != 3)
+        if (Time.time >= _canFire && _enemyID < 3)
         {
-            Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
+            //fire laser downward
+            GameObject laser = Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
             _canFire = Time.time + _fireRate;
+        }
+        if (_player != null)
+        {
+            //fires enemy laser at player if ID 4 and enemy is behind player on y axis.
+            if (Time.time >= _canFire && _enemyID == 4 && _player.transform.position.y > transform.position.y)
+            {
+
+                GameObject laser = Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
+                //find vector to player
+                Vector3 diff = transform.position - _player.transform.position;
+                diff.Normalize();
+                //point at player
+                float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+                laser.transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 90);
+                //pass player position to enemy laser
+                laser.GetComponent<Laser>().AimedLaser(_player.transform.position);
+                _canFire = Time.time + _fireRate;
+            }
         }
     }
 

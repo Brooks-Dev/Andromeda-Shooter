@@ -299,7 +299,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical"), horizontalInput = Input.GetAxis("Horizontal");
 
         //move player in the horizontal (x) & vertical (y) axis with set speed in real time
-        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _velocity * _velocityMultiplier * Time.deltaTime);
+        transform.Translate(_velocity * _velocityMultiplier * Time.deltaTime * new Vector3(horizontalInput, verticalInput, 0));
 
         //check vertical (y) boundary violation
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -5.0f, 0), 0);
