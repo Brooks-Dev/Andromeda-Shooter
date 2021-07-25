@@ -11,7 +11,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
-    private float _powerupSpawnRate = 12f;
+    private float _powerupSpawnRate = 15.6f;
     [SerializeField]
     private float _enemySpawnRate = 3f;
 
@@ -21,6 +21,7 @@ public class SpawnManager : MonoBehaviour
     {
         StartCoroutine(SpawnEnemies());
         StartCoroutine(SpawnPowerups());
+        StartCoroutine(SpawnAmmoPowerups());
     }
 
     //spawn game objects every five seconds at top of play area and random X position
@@ -28,14 +29,61 @@ public class SpawnManager : MonoBehaviour
     {
         while (_stopSpawning == false)
         {
-            int powerupID = Random.Range(0, 6);
-            float delay = Random.Range(_powerupSpawnRate*2f/3f, _powerupSpawnRate*4f/3f);
+            float delay = Random.Range(_powerupSpawnRate * 2f / 3f, _powerupSpawnRate * 4f / 3f);
+            yield return new WaitForSeconds(delay);
+            int powerupID;
+            int random = Random.Range(0, 5);
+            if (random <= 1)
+            {
+                //speed boost power up
+                powerupID = 1;
+            }
+            else if (random > 1 && random <= 3)
+            {
+                //shield powerup
+                powerupID = 2;
+            }
+            else
+            {
+                //health powerup
+                powerupID = 3;
+            }
             float randomX = Random.Range(-9.5f, 9.5f);
             if (_powerupsPrefab[powerupID] != null)
             {
                 Instantiate(_powerupsPrefab[powerupID], new Vector3(randomX, 6.4f, 0), Quaternion.identity);
             }
-            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    IEnumerator SpawnAmmoPowerups()
+    {
+        while (_stopSpawning == false)
+        {
+            float delay = Random.Range(_powerupSpawnRate * 2f / 3f, _powerupSpawnRate * 4f / 3f); 
+            yield return new WaitForSeconds(delay); int powerupID;
+            int random = Random.Range(0, 4);
+            if (random == 0)
+            {
+                //triple shot power up
+                powerupID = 0;
+            }
+            else if (random > 0 && random <= 2)
+            {
+                //laser power powerup
+                powerupID = 4;
+            }
+            else
+            {
+                //missile powerup
+                powerupID = 5;
+            }
+
+            float randomX = Random.Range(-9.5f, 9.5f);
+            if (_powerupsPrefab[powerupID] != null)
+            {
+                Instantiate(_powerupsPrefab[powerupID], new Vector3(randomX, 6.4f, 0), Quaternion.identity);
+            }
         }
     }
 

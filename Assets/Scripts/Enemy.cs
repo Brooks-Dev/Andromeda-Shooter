@@ -146,7 +146,7 @@ public class Enemy : MonoBehaviour
         if (Time.time >= _canFire && _enemyID < 3)
         {
             //fire laser downward
-            GameObject laser = Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
+            Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
             _canFire = Time.time + _fireRate;
         }
         if (_player != null)
@@ -228,7 +228,7 @@ public class Enemy : MonoBehaviour
         _animator.SetTrigger("OnEnemyDeath");
         //plays explosion audio clip
         _enemyAudio.Play();
-        //stops the enmy from moving after death
+        //stops the enemy from moving after death
         _speed = 0;
         _attackPlayer = false;
         //turn off collisions so dead enemy does not destroy player

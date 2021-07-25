@@ -1760,7 +1760,7 @@ MonoBehaviour:
   - {fileID: 7721832294930884303, guid: eca673d8b26ab21468cd336147b04cdc, type: 3}
   - {fileID: 3987020784089644701, guid: ba6b4fc7a40f9ec43b0e2325776f642f, type: 3}
   _enemyContainer: {fileID: 1136522630}
-  _powerupSpawnRate: 12
+  _powerupSpawnRate: 15.6
   _enemySpawnRate: 3
 --- !u!4 &1595705284
 Transform:
