@@ -12,7 +12,10 @@ public class Enemy : MonoBehaviour
     private float _frequency;
     private float _phase;
 
+    private float _distanceX;
     private float _distanceY;
+    //direction of rotation -1 is clockwise, 1 is clockwise
+    private int _rotX;
 
 
     private Animator _animator;
@@ -72,10 +75,11 @@ public class Enemy : MonoBehaviour
         _speed *= Random.Range(0.75f, 1.25f);
         _enemyID = Random.Range(0, 5);
         //20% chance to generate an enemy (ID = 1) that moves horizonatallyif (random == 3)
-        if (_enemyID == 1)
+        if (_enemyID <= 1)
         {
             _frequency = Mathf.PI * Random.Range(0.16f, 0.64f);
             _phase = Random.Range(0f, 2f);
+            _rotX = 1 - 2 * Random.Range(0, 2);
         }
         //20% chance to generate an enemy (ID = 2) that has a shield
         else if (_enemyID == 2)
@@ -113,18 +117,27 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            //if enmemyID is 1 then move horizontally
-            if (_enemyID == 1)
+            //if enmemyID is 0 or 1 then oscillate horizontally
+            if (_enemyID <= 1)
             {
-                _distanceY = _speed * Mathf.Sin(_frequency * Time.time - _spawnTime + _phase) * Time.deltaTime;
+                _distanceX = _speed * Mathf.Sin(_frequency * Time.time - _spawnTime + _phase) * Time.deltaTime;
             }
             else
             {
-                _distanceY = 0f;
+                _distanceX = 0f;
             }
-            transform.Translate(Vector3.right * _distanceY);
+            transform.Translate(_rotX * Vector3.right * _distanceX);
+            //if enemy ID 0 spiral enemy down
+            if (_enemyID == 0)
+            {
+                _distanceY = 0.5f * (2f * _speed * Mathf.Cos(_frequency * Time.time - _spawnTime + _phase) + _speed) * Time.deltaTime;
+                transform.Translate(_distanceY * Vector3.down);
+            }
             //move enyme down
-            transform.Translate(_speed * Time.deltaTime * Vector3.down);
+            else
+            {
+                transform.Translate(_speed * Time.deltaTime * Vector3.down);
+            }
         }
 
         //if enemy off bottom of the screen then respawn at top with new random x position
