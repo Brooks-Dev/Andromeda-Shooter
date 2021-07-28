@@ -46,6 +46,11 @@ public class Laser : MonoBehaviour
             }
             Destroy(gameObject);
         }
+        if (this.CompareTag("EnemyLaser") && other.CompareTag("Powerup"))
+        {
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
     }
 
     public void AimedLaser(Vector3 target)

@@ -16,7 +16,7 @@ public class Powerup : MonoBehaviour
     void Update()
     {
         //move down at speed of 3
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        transform.Translate(_speed * Time.deltaTime * Vector3.down);
         //destroy when leave the view
         if (transform.position.y < -7f)
         {

@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private bool _enemyShieldOn = false;
 
-    private int _enemyID = 0;
+    public int _enemyID = 0; //0 spiral move, 1 side to side, 2 shield, 3 ram player, 4 fires at player from behind
     //access player component
     private Player _player;
     //access enemy rigidbody
@@ -126,7 +126,7 @@ public class Enemy : MonoBehaviour
             {
                 _distanceX = 0f;
             }
-            transform.Translate(_rotX * Vector3.right * _distanceX);
+            transform.Translate(_rotX * _distanceX * Vector3.right);
             //if enemy ID 0 spiral enemy down
             if (_enemyID == 0)
             {
@@ -161,6 +161,19 @@ public class Enemy : MonoBehaviour
             //fire laser downward
             Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
             _canFire = Time.time + _fireRate;
+        }
+        else if (Time.time >= _canFire && _enemyID == 3)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, -Vector2.up);
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.gameObject.CompareTag("Powerup"))
+                {
+                        Debug.Log("Raycast hit powerup");
+                        Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
+                        _canFire = Time.time + _fireRate;
+                }
+            }
         }
         if (_player != null)
         {
