@@ -198,6 +198,10 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        if (Input.GetKey(KeyCode.C))
+        {
+            PullPowerupsToPlayer();
+        }
         CalculateMovement();
         //fire laser on pressing space key
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
@@ -428,5 +432,14 @@ public class Player : MonoBehaviour
             }
         }
         return closest;
+    }
+
+    private void PullPowerupsToPlayer()
+    {
+        GameObject[] powerUps = GameObject.FindGameObjectsWithTag("Powerup");
+        foreach(GameObject powerup in powerUps)
+        {
+            powerup.GetComponent<Powerup>().MoveTowardPlayer(gameObject);
+        }
     }
 }

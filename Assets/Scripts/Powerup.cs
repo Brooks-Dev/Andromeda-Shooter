@@ -11,12 +11,26 @@ public class Powerup : MonoBehaviour
     private int _powerupID;
     [SerializeField]
     private AudioClip _powerupAudio;
+
+    private bool _moveToPlayer = false;
+    private GameObject _player;
     
     // Update is called once per frame
     void Update()
     {
-        //move down at speed of 3
-        transform.Translate(_speed * Time.deltaTime * Vector3.down);
+        if (_moveToPlayer == true  && _player != null)
+        {
+            //get vector to player
+            Vector2 direction = (Vector2)_player.transform.position - (Vector2)transform.position;
+            direction.Normalize();
+            //move toward player
+            transform.Translate(_speed * Time.deltaTime * new Vector3(direction.x, direction.y, 0f));
+        }
+        else
+        {
+            //move down at speed of 3
+            transform.Translate(_speed * Time.deltaTime * Vector3.down);
+        }
         //destroy when leave the view
         if (transform.position.y < -7f)
         {
@@ -70,5 +84,11 @@ public class Powerup : MonoBehaviour
             //destroy power up
             Destroy(gameObject);
         }
+    }
+
+    public void MoveTowardPlayer(GameObject player)
+    {
+        _moveToPlayer = true;
+        _player = player;
     }
 }
