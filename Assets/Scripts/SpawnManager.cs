@@ -17,6 +17,29 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
+    private int _wave = 1;
+    private int _enemiesSpawned;
+    private int _waveEnd;
+    private UIManager _uiManager;
+    private GameManager _gameManager;
+
+    private void Start()
+    {
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+        if (_gameManager == null)
+        {
+            Debug.LogError("Game manager in spawn manager is null.");
+        }
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.LogError("UI Manager is null in spawn manager.");
+        }
+        _waveEnd = 10;
+        _uiManager.UpdateWave(_wave);
+        _gameManager.UpdateWave(_wave);
+    }
+
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemies());
@@ -96,7 +119,15 @@ public class SpawnManager : MonoBehaviour
             float randomX = Random.Range(-9.5f, 9.5f);
             GameObject newEnemy = Instantiate(_enemyPrefab, new Vector3(randomX, 6.4f, 0), Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
+            _enemiesSpawned++;
             yield return new WaitForSeconds(wait);
+            if (_enemiesSpawned >= _waveEnd)
+            {
+                _wave++;
+                _uiManager.UpdateWave(_wave);
+                _gameManager.UpdateWave(_wave);
+                _waveEnd += 10 * _wave/2;
+            }
         }
     }
 

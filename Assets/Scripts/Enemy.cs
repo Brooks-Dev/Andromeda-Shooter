@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private bool _enemyShieldOn = false;
 
-    public int _enemyID = 0; //0 spiral move, 1 side to side, 2 shield, 3 ram player, 4 fires at player from behind
+    public int _enemyID = 0; //1 spiral move, 0 side to side, 2 shield, 3 ram player, 4 fires at player from behind
     //access player component
     private Player _player;
     //access enemy rigidbody
@@ -37,9 +37,11 @@ public class Enemy : MonoBehaviour
     private float _playerDetectRange = 4f;
     private bool _attackPlayer = false;
     private float _angleChangingSpeed = 180f;
+    private int _wave;
 
     void Start()
     {
+        _wave = GameObject.Find("Game_Manager").GetComponent<GameManager>().CurrentWave();
         _player = GameObject.Find("Player").transform.GetComponent<Player>();
         if (_player == null)
         {
@@ -73,8 +75,8 @@ public class Enemy : MonoBehaviour
 
         _spawnTime = Time.time;
         _speed *= Random.Range(0.75f, 1.25f);
-        _enemyID = Random.Range(0, 5);
-        //20% chance to generate an enemy (ID = 1) that moves horizonatallyif (random == 3)
+        _enemyID = Random.Range(0, Mathf.Clamp(_wave, 1, 5));
+        //20% chance to generate an enemy (ID = 0) that moves horizonatallyif (random == 3)
         if (_enemyID <= 1)
         {
             _frequency = Mathf.PI * Random.Range(0.16f, 0.64f);
@@ -127,8 +129,8 @@ public class Enemy : MonoBehaviour
                 _distanceX = 0f;
             }
             transform.Translate(_rotX * _distanceX * Vector3.right);
-            //if enemy ID 0 spiral enemy down
-            if (_enemyID == 0)
+            //if enemy ID 1 spiral enemy down
+            if (_enemyID == 1)
             {
                 _distanceY = 0.5f * (2f * _speed * Mathf.Cos(_frequency * Time.time - _spawnTime + _phase) + _speed) * Time.deltaTime;
                 transform.Translate(_distanceY * Vector3.down);
@@ -226,7 +228,7 @@ public class Enemy : MonoBehaviour
                 return;
             }
             //update player score
-            _player.PlayerScore(10);
+            _player.PlayerScore(5 + 10 * _wave / 2);
             //destroy enemy
             EnemyDestroyed();
         }
@@ -242,7 +244,7 @@ public class Enemy : MonoBehaviour
                 return;
             }
             //update player score
-            _player.PlayerScore(10);
+            _player.PlayerScore(5 + 10 * _wave/2);
             //destroy enemy
             EnemyDestroyed();
         }

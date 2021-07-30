@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private bool _gameOver = false;
+    private int _wave;
     
      // Update is called once per frame
     void Update()
@@ -34,5 +35,15 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         _gameOver = true;
+    }
+
+    public void UpdateWave(int wave)
+    {
+        _wave = wave;
+    }
+
+    public int CurrentWave()
+    {
+        return _wave;
     }
 }

@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
     private Text _missileText;
     [SerializeField]
     private Image _thrusterEnergyImage;
+    [SerializeField]
+    private Text _waveText;
 
     private GameManager _gameManager;
 
@@ -48,15 +50,19 @@ public class UIManager : MonoBehaviour
     {
         if (ammo == 500)
         {
-            _ammoText.text = "Laser Power: " + "\u221E";
+            _ammoText.text = "Power: " + "\u221E";
             _ammoText.fontSize = 20;
         }
         else
         {
-            _ammoText.text = "Laser Power: " + ammo + "/" + 15;
+            _ammoText.text = "Power: " + ammo + "/" + 15;
         }
     }
 
+    public void UpdateWave(int wave)
+    {
+        _waveText.text = "Wave: " + wave;
+    }
     public void UpdateMissiles(int _missiles)
     {
         _missileText.text = "Missiles: " + _missiles +  "/" + 2;
